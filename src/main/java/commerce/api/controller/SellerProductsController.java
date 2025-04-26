@@ -1,6 +1,7 @@
 package commerce.api.controller;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.UUID;
 
 import commerce.Product;
@@ -18,7 +19,8 @@ public record SellerProductsController(ProductRepository repository) {
 
     @PostMapping("/seller/products")
     ResponseEntity<?> registerProduct(
-        @RequestBody RegisterProductCommand command
+        @RequestBody RegisterProductCommand command,
+        Principal user
     ) {
         if (isValidUri(command.imageUri()) == false) {
             return ResponseEntity.badRequest().build();
@@ -27,6 +29,7 @@ public record SellerProductsController(ProductRepository repository) {
         UUID id = UUID.randomUUID();
         var product = new Product();
         product.setId(id);
+        product.setSellerId(UUID.fromString(user.getName()));
         repository.save(product);
         URI location = URI.create("/seller/products/" + id);
         return ResponseEntity.created(location).build();
@@ -42,9 +45,11 @@ public record SellerProductsController(ProductRepository repository) {
     }
 
     @GetMapping("/seller/products/{id}")
-    ResponseEntity<?> findProduct(@PathVariable UUID id) {
+    ResponseEntity<?> findProduct(@PathVariable UUID id, Principal user) {
+        UUID sellerId = UUID.fromString(user.getName());
         return repository
             .findById(id)
+            .filter(product -> product.getSellerId().equals(sellerId))
             .map(product -> ResponseEntity.ok().build())
             .orElseGet(() -> ResponseEntity.notFound().build());
     }

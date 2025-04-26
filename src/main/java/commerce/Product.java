@@ -21,4 +21,6 @@ public class Product {
 
     @Column(unique = true)
     private UUID id;
+
+    private UUID sellerId;
 }
