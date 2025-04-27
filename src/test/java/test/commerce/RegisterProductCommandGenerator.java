@@ -30,6 +30,18 @@ public class RegisterProductCommandGenerator {
         );
     }
 
+    public static RegisterProductCommand generateRegisterProductCommandWithPriceAmount(
+        BigDecimal priceAmount
+    ) {
+        return new RegisterProductCommand(
+            generateProductName(),
+            generateProductImageUri(),
+            generateProductDescription(),
+            priceAmount,
+            generateProductStockQuantity()
+        );
+    }
+
     private static String generateProductName() {
         return "name" + UUID.randomUUID();
     }

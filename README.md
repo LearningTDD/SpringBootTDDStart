@@ -306,6 +306,7 @@
 - [x] 판매자가 아닌 사용자의 접근 토큰을 사용하면 403 Forbidden 상태코드를 반환한다
 - [x] imageUri 속성이 URI 형식을 따르지 않으면 400 Bad Request 상태코드를 반환한다
 - [x] 올바르게 요청하면 등록된 상품 정보에 접근하는 Location 헤더를 반환한다
+- [x] priceAmount 속성이 0보다 작으면 400 Bad Request 상태코드를 반환한다
 
 ### 판매자 상품 조회
 
