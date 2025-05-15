@@ -1,5 +1,6 @@
 package test.commerce.api.seller.products;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -16,6 +17,7 @@ import test.commerce.api.TestFixture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommand;
 import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommandWithImageUri;
+import static test.commerce.RegisterProductCommandGenerator.generateRegisterProductCommandWithPriceAmount;
 
 @CommerceApiTest
 @DisplayName("POST /seller/products")
@@ -115,5 +117,26 @@ public class POST_specs {
                 return false;
             }
         };
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = { -1, -0.1 })
+    void priceAmount_속성이_0보다_작으면_400_Bad_Request_상태코드를_반환한다(
+        double priceAmountValue,
+        @Autowired TestFixture fixture
+    ) {
+        // Arrange
+        fixture.createSellerThenSetAsDefaultUser();
+        BigDecimal priceAmount = new BigDecimal(priceAmountValue);
+
+        // Act
+        ResponseEntity<Void> response = fixture.client().postForEntity(
+            "/seller/products",
+            generateRegisterProductCommandWithPriceAmount(priceAmount),
+            Void.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
     }
 }

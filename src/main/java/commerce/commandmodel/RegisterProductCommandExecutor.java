@@ -1,5 +1,6 @@
 package commerce.commandmodel;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class RegisterProductCommandExecutor {
     }
 
     private static void validateCommand(RegisterProductCommand command) {
-        if (isValidUri(command.imageUri()) == false) {
+        if (command.priceAmount().compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidCommandException();
         }
     }
